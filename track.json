@@ -1,0 +1,38 @@
+{
+"shipment": [
+	{
+		"sh_consNo": "501008",
+		"sh_pickupDate": "2018-03-04",
+		"sh_weight": "",
+		"sh_city": "Petaling Jaya"
+	}		],
+
+"tracking": [
+	{
+		"tr_timeDate": "2018-03-04 11:43:06",
+		"tr_location": "Petaling Jaya, Selangor",
+		"tr_status": "Delivered",
+		"tr_comments": ""
+	},
+	{
+		"sh_consNo": "501008",
+		"sh_pickupDate": "2018-03-04",
+		"sh_weight": "",
+		"sh_city": "Petaling Jaya"
+	},
+	{
+		"sh_consNo": "501008",
+		"sh_pickupDate": "2018-03-04",
+		"sh_weight": "",
+		"sh_city": "Petaling Jaya"
+	},
+	{
+		"sh_consNo": "501008",
+		"sh_pickupDate": "2018-03-04",
+		"sh_weight": "",
+		"sh_city": "Petaling Jaya"
+	}	
+			]
+}
+
+	

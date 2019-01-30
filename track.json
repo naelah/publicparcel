@@ -1,38 +1,36 @@
 {
-"shipment": [
-	{
-		"sh_consNo": "501008",
-		"sh_pickupDate": "2018-03-04",
-		"sh_weight": "",
-		"sh_city": "Petaling Jaya"
-	}		],
-
-"tracking": [
-	{
-		"tr_timeDate": "2018-03-04 11:43:06",
-		"tr_location": "Petaling Jaya, Selangor",
-		"tr_status": "Delivered",
-		"tr_comments": ""
-	},
-	{
-		"sh_consNo": "501008",
-		"sh_pickupDate": "2018-03-04",
-		"sh_weight": "",
-		"sh_city": "Petaling Jaya"
-	},
-	{
-		"sh_consNo": "501008",
-		"sh_pickupDate": "2018-03-04",
-		"sh_weight": "",
-		"sh_city": "Petaling Jaya"
-	},
-	{
-		"sh_consNo": "501008",
-		"sh_pickupDate": "2018-03-04",
-		"sh_weight": "",
-		"sh_city": "Petaling Jaya"
-	}	
-			]
+	"shipment": [
+		{
+			"sh_consNo": "501008",
+			"sh_pickupDate": "2018-03-04",
+			"sh_weight": "",
+			"sh_city": "Petaling Jaya"
+		}
+	],
+	"tracking": [
+		{
+			"tr_timeDate": "2018-03-04 11:43:06",
+			"tr_location": "Petaling Jaya, Selangor",
+			"tr_status": "Delivered",
+			"tr_comments": ""
+		},
+		{
+			"tr_timeDate": "2018-03-04 09:42:40",
+			"tr_location": "Petaling Jaya, Selangor",
+			"tr_status": "Out ForDelivery",
+			"tr_comments": ""
+		},
+		{
+			"tr_timeDate": "2018-03-03 15:42:28",
+			"tr_location": "Petaling Jaya, Selangor",
+			"tr_status": "Pickup",
+			"tr_comments": ""
+		},
+		{
+			"tr_timeDate": "2018-03-03 07:32:06",
+			"tr_location": "Petaling Jaya, Selangor",
+			"tr_status": "Record Created",
+			"tr_comments": ""
+		}
+	]
 }
-
-	

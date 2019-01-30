@@ -19,6 +19,57 @@
 
 <!-- Modernizr Scripts -->
     <script src="javascript/vendor/modernizr-2.7.1.min.js"></script>
+    <script>
+    
+    
+    window.onload = function() {
+      resetCookie();
+      alert("message");
+      auth();
+      let token = getCookie('token');
+      alert(token);
+;
+    };
+     function resetCookie(){
+      var mydate = new Date();
+      mydate.setTime(mydate.getTime() - 1);
+      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      
+     }
+     function getCookie(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+    }
+     function auth(){
+      
+      document.cookie='token=fewbfewdjndwqhidqwhufbejqihduwqibfuwqibfu32hr247y578r431748jxd9my893nfewfew2xe832mdejwqnxfeuyofewfew;';
+        // let username = 'Faruz_mas';
+        // let password = '123456';
+        // alert('postAuth')
+        // fetch('http://www.publicparcel.com/api/authenticate', {
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json'},
+        //         body: JSON.stringify({ username, password })
+        //     }).then((res) => res.json())
+        //         .then((data) => {data.forEach((token) => {
+        //           const { bearer } = token
+        //           alert("${bearer}");
+        //           alert("authenticated");
+        //         });
+        //       })
+        //         .catch((err) => {alert("error"); console.log(err);})
+      }
+    </script>
 </head>
 
 <body class="index" id="to-top">

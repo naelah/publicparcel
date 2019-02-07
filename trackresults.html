@@ -36,28 +36,31 @@
     <script src="javascript/vendor/modernizr-2.7.1.min.js"></script>
     <script>
     window.onload = function() {
-      token = document.cookie
-      getLocal();
+      token = document.cookie;
+      var orderNo = location.search.split('orderNo=')[1]
+      alert(orderNo);
+      getOrders();
     };
 
-    function postAuth(){
+    // function postAuth(){
 
-        let username = 'Faruz_mas';
-        let password = '123456';
-        alert('postAuth')
-        fetch('http://www.publicparcel.com/api/authenticate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ username, password })
-            }).then((res) => res.json())
-                .then((data) => {data.forEach((token) => {
-                  const { bearer } = token
-                  alert("${bearer}");
-                  alert("authenticated");
-                });
-              })
-                .catch((err) => {alert("error"); console.log(err);})
-      }
+    //     let username = 'MAB_Kargo';
+    //     let password = 'uykhZOz3';
+    //     alert('postAuth');
+    //     alert(consNo);
+    //     fetch('http://www.publicparcel.com/api/authenticate', {
+    //             method: 'POST',
+    //             headers: {'Content-Type': 'application/json'},
+    //             body: JSON.stringify({ username, password })
+    //         }).then((res) => res.json())
+    //             .then((data) => {data.forEach((token) => {
+    //               const { bearer } = token
+    //               alert("${bearer}");
+    //               alert("authenticated");
+    //             });
+    //           })
+    //             .catch((err) => {alert("error"); console.log(err);})
+    //   }
 
       function getLocal(){
          /*********************************************
@@ -112,65 +115,56 @@
          *          Using public parcel API         *
          * ********************************************/
         //postAuth();
-        let result = 
-//         			<center>Tracking No:</center>
-//               <h4 class="text-center">506021</h4>
-// 			  <div class="row"> 
-// 			 <table style="width:100%"><br>
-//   <tr>
-//     <th>AWB No</th>
-//     <th>Pickup Date</th> 
-//     <th>Weight</th>
-//     <th>Quantity</th>
-//     <th>Destination</th>
-//     <th>Proof of Delivery</th>
-//   </tr>
-//   <tr>
-//     <td><center>506021</center></td>
-//     <td><center>2018-07-17</center></td> 
-//     <td><center>1.50</center></td>
-//     <td><center>1</center></td>
-//     <td><center>JALAN BURMAH</center></td>
-//     <td><center>POD Image</center></td></center>
-//   </tr>
- 
-// </table>
-		
-// 		 <table style="width:100%"><br>
-//   <tr>
-//     <th>Date/Time</th>
-//     <th>Location</th> 
-//     <th>Status</th>
-//     <th>Comments</th>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-19 14:46:15</center></td>
-//     <td><center>Georgetown, Pulau Pinang</center></td> 
-//     <td><center>Delivered</center></td>
-//     <td><center></center></td>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-17 19:14:02</center></td>
-//     <td><center>KLIA, Selangor</center></td> 
-//     <td><center>In Transit</center></td>
-//     <td><center></center></td>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-17 18:34:09</center></td>
-//     <td><center>SHAH ALAM, SELANGOR</center></td> 
-//     <td><center>In Warehouse</center></td>
-//     <td><center></center></td>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-17 15:06:11</center></td>
-//     <td><center>Shah Alam, Selangor</center></td> 
-//     <td><center>Record Created</center></td>
-//     <td><center></center></td>
-//   </tr>
- 
-// </table>	
+        alert(orderNo);
+        alert(token);
+        alert("Bearer ${token}");
+        let result = ""
 
-    document.getElementById('result').innerHTML = result;
+        fetch('http://www.publicparcel.com/api/authenticate', {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json',
+                          'Authorization': 'Bearer ${tokem}'},
+                params: JSON.stringify({ orderNo })})
+          .then(function (res) {return res.json();})
+          .then(function (data) {
+            alert("data");
+              let result = `<center>Tracking No:</center> <h4 class="text-center">${data.shipment[0].sh_consNo}</h4><br>`;
+              result += `<div class="row"><table style="width:100%"><br>`;
+              result +=`<tr><th>AWB No</th><th>Pickup Date</th><th>Weight</th><th>Quantity</th><th>Destination</th><th>Proof of Delivery</th></tr>`;
+              for (i in data.shipment){
+                result +=   `<tr>
+                              <td><center>${data.shipment[i].sh_consNo}</center></td>
+                              <td><center>${data.shipment[i].sh_pickupDate}</center></td> 
+                              <td><center>${data.shipment[i].sh_weight}</center></td>
+                              <td><center></center></td>
+                              <td><center>${data.shipment[i].sh_city}</center></td>
+                              <td><center></center></td></center>
+                            </tr>`;
+              }
+              result += `</table><table style="width:100%"><br>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>Location</th> 
+                            <th>Status</th>
+                            <th>Comments</th>
+                          </tr>`;
+              for (i in data.tracking) {
+                  result +=
+                            `<tr>
+                              <td><center>${data.tracking[i].tr_timeDate}</center></td>
+                              <td><center>${data.tracking[i].tr_location}</center></td> 
+                              <td><center>${data.tracking[i].tr_status}</center></td>
+                              <td><center>${data.tracking[i].tr_comments}</center></td>
+                            </tr>`;
+              }
+              result += `</table>`;
+              });
+              if (result == ""){
+                result = "No Data";
+              }
+              alert(result);
+              document.getElementById('result').innerHTML = result;
+
       }
     </script>
   </head>
@@ -265,120 +259,6 @@
     <script src="javascript/vendor/jquery-2.1.0.min.js"></script>
     <script src="javascript/bootstrap.min.js"></script>
     <script src="javascript/assets/application.js"></script>
-    <script>
-      window.onload = function() {
-        alert("message");
-        getOrders();
-      };
-      function getAPI() {
-
-          /*********************************************
-         *          Using jsonplaceholder API         *
-         * ********************************************/
-
-          fetch('https://jsonplaceholder.typicode.com/users')
-              .then((res) => { return res.json() })
-              .then((data) => {
-                  let result = `<h2 class="w3-center w3-allerta w3-xxlarge"> Random User Info From Jsonplaceholder API</h2>`;
-                  data.forEach((user) => {
-                      const {id, name, email, address:{city,street}} = user
-                      result +=
-                          `<div class="w3-panel w3-leftbar w3-border w3-round-small w3-border-blue w3-margin">
-                              <h5> User ID: ${id} </h5>
-                              <ul class="w3-ul">
-                                  <li> User Full Name : ${name}</li>
-                                  <li> User Email : ${email} </li>
-                                  <li> User Address : ${city}, ${street} </li>
-                              </ul>
-                           </div>`;
-                      document.getElementById('result').innerHTML = result;
-                  });
-              })
-
-      }
-
-      function postAuth(){
-        let username = 'Faruz_mas';
-        let password = '123456';
-        alert('postAuth')
-        fetch('http://publicparcel.com/api/authenticate', {
-                method: 'POST',
-                body: JSON.stringify({ username, password })
-            }).then((res) => {return res.json()})
-                .then((data) => data.forEach((token) => {
-                  alert(token);
-                  
-                })
-                .catch((err) => console.log(err));
-      }
-
-      function getOrders(){
-
-        /*********************************************
-         *          Using public parcel API         *
-         * ********************************************/
-        postAuth();
-        let result = `<h2 class="w3-center w3-allerta w3-xxlarge"> ${}</h2>`
-
-//         			<center>Tracking No:</center>
-//               <h4 class="text-center">506021</h4>
-// 			  <div class="row"> 
-// 			 <table style="width:100%"><br>
-//   <tr>
-//     <th>AWB No</th>
-//     <th>Pickup Date</th> 
-//     <th>Weight</th>
-//     <th>Quantity</th>
-//     <th>Destination</th>
-//     <th>Proof of Delivery</th>
-//   </tr>
-//   <tr>
-//     <td><center>506021</center></td>
-//     <td><center>2018-07-17</center></td> 
-//     <td><center>1.50</center></td>
-//     <td><center>1</center></td>
-//     <td><center>JALAN BURMAH</center></td>
-//     <td><center>POD Image</center></td></center>
-//   </tr>
- 
-// </table>
-		
-// 		 <table style="width:100%"><br>
-//   <tr>
-//     <th>Date/Time</th>
-//     <th>Location</th> 
-//     <th>Status</th>
-//     <th>Comments</th>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-19 14:46:15</center></td>
-//     <td><center>Georgetown, Pulau Pinang</center></td> 
-//     <td><center>Delivered</center></td>
-//     <td><center></center></td>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-17 19:14:02</center></td>
-//     <td><center>KLIA, Selangor</center></td> 
-//     <td><center>In Transit</center></td>
-//     <td><center></center></td>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-17 18:34:09</center></td>
-//     <td><center>SHAH ALAM, SELANGOR</center></td> 
-//     <td><center>In Warehouse</center></td>
-//     <td><center></center></td>
-//   </tr>
-//   <tr>
-//     <td><center>2018-07-17 15:06:11</center></td>
-//     <td><center>Shah Alam, Selangor</center></td> 
-//     <td><center>Record Created</center></td>
-//     <td><center></center></td>
-//   </tr>
- 
-// </table>	
-
-    document.getElementById('result').innerHTML = result;
-      }
-  </script>
+    
   </body>
 </html>

@@ -18,32 +18,18 @@
 <link href="images/favicon/favicon.png" rel="apple-touch-icon" sizes="114x114">
 
 <!-- Modernizr Scripts -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="javascript/vendor/modernizr-2.7.1.min.js"></script>
     <script>
     
-    const authUrl = 'http://www.publicparcel.com/api/authenticate';
-    let username = 'MAB_Kargo';
-    let password = 'uykhZOz3';
-    const body = JSON.stringify({ username, password })
+    
     window.onload = function() {
       resetCookie();
       alert("message");
-      alert(authUrl);
-      alert(body);
-      authorize();
+      auth();
       let token = getCookie('token');
       alert(token);
 
     };
-    function authorize(){
-      alert("authorize")
-      $.post(authUrl, body, function(data, status){
-        alert(data);
-        alert(status);
-        alert("authorize!");
-      });
-    }
      function resetCookie(){
       var mydate = new Date();
       mydate.setTime(mydate.getTime() - 1);
@@ -65,22 +51,25 @@
       return "";
     }
      function auth(){
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
       
       //document.cookie='token=fewbfewdjndwqhidqwhufbejqihduwqibfuwqibfu32hr247y578r431748jxd9my893nfewfew2xe832mdejwqnxfeuyofewfew;';
         let username = 'MAB_Kargo';
         let password = 'uykhZOz3';
         alert('postAuth');
-        fetch('http://www.publicparcel.com/api/authenticate', {
+        fetch(proxyUrl+'http://www.publicparcel.com/api/authenticate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ username, password })
             }).then((res) => { return res.json(); })
-                .then((data) => {
+                .then((data) => { data.forEach((token) => { 
+                 const {bearer} = token
                   alert(data)
-                  alert("${bearer}");
-                  alert("authenticated");
+                  alert("${token}");
+                  alert(token);
                   document.cookie='token=${bearer};'
-              })
+              });
+                })
                 .catch((err) => {alert("error"); console.log(err);});
      }
     </script>

@@ -62,13 +62,13 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ username, password })
             }).then((res) => { return res.json(); })
-                .then((data) => { data.forEach((token) => { 
-                 const {bearer} = token
+                .then((data) => { 
+                 //const {bearer} = token
                   alert(data)
-                  alert("${token}");
-                  alert(token);
-                  document.cookie='token=${bearer};'
-              });
+                  //alert("${token}");
+                  //alert(token);
+                  //document.cookie='token=${bearer};'
+              
                 })
                 .catch((err) => {alert("error"); console.log(err);});
      }

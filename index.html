@@ -64,7 +64,7 @@
                 .then((data) => { 
                   alert(data.token);
                   console.log('Request succeeded with JSON response', data);
-                  Cookies.set('token', 'fefefe');
+                  Cookies.set('token', data.token);
                   alert('token ==== ' + data.token);
                   console.log("Document cookie", Cookies.get('token'));
               

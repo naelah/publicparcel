@@ -55,6 +55,12 @@
       }
     };
     function auth(consNo){
+
+        /**********************************************
+         *   Using public parcel authorization API  *
+         * ********************************************/
+
+
         // use proxy url to override cors headers error
         var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
         let username = 'MAB_Kargo';
@@ -75,8 +81,8 @@
 
       function getOrders(consNo, token){
 
-        /*********************************************
-         *          Using public parcel API         *
+        /**********************************************
+         *   Using public parcel tracking status API  *
          * ********************************************/
         var result = ""
         var proxyUrl = 'https://cors-anywhere.herokuapp.com/';

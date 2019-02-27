@@ -34,102 +34,53 @@
 
     <!-- Modernizr Scripts -->
     <script src="javascript/vendor/modernizr-2.7.1.min.js"></script>
+    <script src="javascript/vendor/js.cookie.js"></script>
     <script>
     window.onload = function() {
-      token = document.cookie;
-      var orderNo = location.search.split('orderNo=')[1]
-      alert(orderNo);
-      alert(document.cookie);
-      getOrders(orderNo=orderNo);
-    };
-
-    // function postAuth(){
-
-    //     let username = 'MAB_Kargo';
-    //     let password = 'uykhZOz3';
-    //     alert('postAuth');
-    //     alert(consNo);
-    //     fetch('http://www.publicparcel.com/api/authenticate', {
-    //             method: 'POST',
-    //             headers: {'Content-Type': 'application/json'},
-    //             body: JSON.stringify({ username, password })
-    //         }).then((res) => res.json())
-    //             .then((data) => {data.forEach((token) => {
-    //               const { bearer } = token
-    //               alert("${bearer}");
-    //               alert("authenticated");
-    //             });
-    //           })
-    //             .catch((err) => {alert("error"); console.log(err);})
-    //   }
-
-      function getLocal(){
-         /*********************************************
-         *          Using local json        *
-         * ********************************************/
-         let result = "";
-        fetch('track.json')
-          .then(function (res) {return res.json();})
-          .then(function (data) {
-            alert("data");
-              let result = `<center>Tracking No:</center> <h4 class="text-center">${data.shipment[0].sh_consNo}</h4><br>`;
-              result += `<div class="row"><table style="width:100%"><br>`;
-              result +=`<tr><th>AWB No</th><th>Pickup Date</th><th>Weight</th><th>Quantity</th><th>Destination</th><th>Proof of Delivery</th></tr>`;
-              for (i in data.shipment){
-                result +=   `<tr>
-                              <td><center>${data.shipment[i].sh_consNo}</center></td>
-                              <td><center>${data.shipment[i].sh_pickupDate}</center></td> 
-                              <td><center>${data.shipment[i].sh_weight}</center></td>
-                              <td><center></center></td>
-                              <td><center>${data.shipment[i].sh_city}</center></td>
-                              <td><center></center></td></center>
-                            </tr>`;
-              }
-              result += `</table><table style="width:100%"><br>
-                          <tr>
-                            <th>Date/Time</th>
-                            <th>Location</th> 
-                            <th>Status</th>
-                            <th>Comments</th>
-                          </tr>`;
-              for (i in data.tracking) {
-                  result +=
-                            `<tr>
-                              <td><center>${data.tracking[i].tr_timeDate}</center></td>
-                              <td><center>${data.tracking[i].tr_location}</center></td> 
-                              <td><center>${data.tracking[i].tr_status}</center></td>
-                              <td><center>${data.tracking[i].tr_comments}</center></td>
-                            </tr>`;
-              }
-              result += `</table>`;
-              });
-              if (result == ""){
-                result = "No Data";
-              }
-              alert(result);
-              document.getElementById('result').innerHTML = result;
+      token = Cookies.get('token')
+      //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEyNDEsImlzcyI6Imh0dHA6Ly93d3cucHVibGljcGFyY2VsLmNvbS9hcGkvYXV0aGVudGljYXRlIiwiaWF0IjoxNTUxMjM4MTMzLCJleHAiOjE1NTEyNDE3MzMsIm5iZiI6MTU1MTIzODEzMywianRpIjoidkRIYTA1MTZDYWxXV3dCdiJ9.rQ7nYj2MsSRA6pfo3u_fw9-ZVig6p7B2N7RXXoIACog"
+      if (token == undefined) {
+        auth()
       }
+      var orderNo = location.search.split('orderNo=')[1]
+      getOrders(consNo=orderNo, token=token);
+    };
+    function auth(){
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        let username = 'MAB_Kargo';
+        let password = 'uykhZOz3';
+        fetch(proxyUrl+'http://www.publicparcel.com/api/authenticate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Access-Control-Origin': '*'},
+                body: JSON.stringify({ username, password })
+            }).then((res) => { return res.json(); })
+                .then((data) => { 
+                  console.log('Request succeeded with JSON response', data);
+                  Cookies.set('token', data.token);
+                  console.log("Document cookie", Cookies.get('token'));
+              
+                })
+                .catch((err) => {alert("error"); console.log(err);});
+     }
 
-      function getOrders(orderNo, token){
+      function getOrders(consNo, token){
 
         /*********************************************
          *          Using public parcel API         *
          * ********************************************/
-        //postAuth();
-        alert(orderNo);
-        alert(token);
-        alert("Bearer ${token}");
-        let result = ""
-
-        fetch('http://www.publicparcel.com/api/authenticate', {
+        var result = ""
+        var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        fetch(proxyUrl+'http://www.publicparcel.com/api/trackingStatus'+'?consNo='+consNo, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json',
-                          'Authorization': 'Bearer ${tokem}'},
-                params: JSON.stringify({ orderNo })})
+                          'Authorization': 'Bearer '+token}})
           .then(function (res) {return res.json();})
           .then(function (data) {
-            alert("data");
-              let result = `<center>Tracking No:</center> <h4 class="text-center">${data.shipment[0].sh_consNo}</h4><br>`;
+            console.log('Request succeeded with JSON response', data);
+            if (data[0] == 'No Result'){
+              result = "No Data"
+            } else {
+              result = `<center>Tracking No:</center> <h4 class="text-center">${data.shipment[0].sh_consNo}</h4><br>`;
               result += `<div class="row"><table style="width:100%"><br>`;
               result +=`<tr><th>AWB No</th><th>Pickup Date</th><th>Weight</th><th>Quantity</th><th>Destination</th><th>Proof of Delivery</th></tr>`;
               for (i in data.shipment){
@@ -154,17 +105,17 @@
                             `<tr>
                               <td><center>${data.tracking[i].tr_timeDate}</center></td>
                               <td><center>${data.tracking[i].tr_location}</center></td> 
-                              <td><center>${data.tracking[i].tr_status}</center></td>
+                              <td><center>${data.tracking[i].status_status}</center></td>
                               <td><center>${data.tracking[i].tr_comments}</center></td>
                             </tr>`;
               }
               result += `</table>`;
-              });
-              if (result == ""){
-                result = "No Data";
               }
-              alert(result);
               document.getElementById('result').innerHTML = result;
+              }).catch((err) => {
+              result = "No data"; 
+              document.getElementById('result').innerHTML = result;
+              console.log(err)});
 
       }
     </script>
@@ -185,66 +136,7 @@
         </div> <!-- /.row -->
         <section class="booklist-content">
             <div id="result" class="w3-container"></div>
-
-          <div class="row">
-            <div class="col-md-12">
-			<center>Tracking No:</center>
-              <h4 class="text-center">506021</h4>
-			  <div class="row"> 
-			 <table style="width:100%"><br>
-  <tr>
-    <th>AWB No</th>
-    <th>Pickup Date</th> 
-    <th>Weight</th>
-    <th>Quantity</th>
-    <th>Destination</th>
-    <th>Proof of Delivery</th>
-  </tr>
-  <tr>
-    <td><center>506021</center></td>
-    <td><center>2018-07-17</center></td> 
-    <td><center>1.50</center></td>
-    <td><center>1</center></td>
-    <td><center>JALAN BURMAH</center></td>
-    <td><center>POD Image</center></td></center>
-  </tr>
- 
-</table>
-		
-		 <table style="width:100%"><br>
-  <tr>
-    <th>Date/Time</th>
-    <th>Location</th> 
-    <th>Status</th>
-    <th>Comments</th>
-  </tr>
-  <tr>
-    <td><center>2018-07-19 14:46:15</center></td>
-    <td><center>Georgetown, Pulau Pinang</center></td> 
-    <td><center>Delivered</center></td>
-    <td><center></center></td>
-  </tr>
-  <tr>
-    <td><center>2018-07-17 19:14:02</center></td>
-    <td><center>KLIA, Selangor</center></td> 
-    <td><center>In Transit</center></td>
-    <td><center></center></td>
-  </tr>
-  <tr>
-    <td><center>2018-07-17 18:34:09</center></td>
-    <td><center>SHAH ALAM, SELANGOR</center></td> 
-    <td><center>In Warehouse</center></td>
-    <td><center></center></td>
-  </tr>
-  <tr>
-    <td><center>2018-07-17 15:06:11</center></td>
-    <td><center>Shah Alam, Selangor</center></td> 
-    <td><center>Record Created</center></td>
-    <td><center></center></td>
-  </tr>
- 
-</table>			 
-	<br>
+	          <br>
         </div> <!-- /.row -->      
         </section> <!-- /.sign-in-up-content -->
      <div class="row">

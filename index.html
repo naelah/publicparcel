@@ -24,32 +24,9 @@
     
     
     window.onload = function() {
-     // resetCookie();
-      //$.cookie.json = true;
       auth();
-    //  let token = getCookie('token');
 
     };
-    //  function resetCookie(){
-    //   var mydate = new Date();
-    //   mydate.setTime(mydate.getTime() - 1);
-    //   document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      
-    //  }
-    //  function getCookie(cname) {
-    //   var name = cname + "=";
-    //   var ca = document.cookie.split(';');
-    //   for(var i = 0; i < ca.length; i++) {
-    //     var c = ca[i];
-    //     while (c.charAt(0) == ' ') {
-    //       c = c.substring(1);
-    //     }
-    //     if (c.indexOf(name) == 0) {
-    //       return c.substring(name.length, c.length);
-    //       }
-    //   }
-    //   return "";
-    // }
      function auth(){
       var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
       
@@ -62,10 +39,8 @@
                 body: JSON.stringify({ username, password })
             }).then((res) => { return res.json(); })
                 .then((data) => { 
-                  alert(data.token);
                   console.log('Request succeeded with JSON response', data);
                   Cookies.set('token', data.token);
-                  alert('token ==== ' + data.token);
                   console.log("Document cookie", Cookies.get('token'));
               
                 })

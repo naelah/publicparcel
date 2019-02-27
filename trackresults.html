@@ -37,20 +37,29 @@
     <script src="javascript/vendor/js.cookie.js"></script>
     <script>
     window.onload = function() {
+
+      // taking Order No from url & token from cookie
+      var orderNo = location.search.split('orderNo=')[1]
       token = Cookies.get('token')
-      //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEyNDEsImlzcyI6Imh0dHA6Ly93d3cucHVibGljcGFyY2VsLmNvbS9hcGkvYXV0aGVudGljYXRlIiwiaWF0IjoxNTUxMjM4MTMzLCJleHAiOjE1NTEyNDE3MzMsIm5iZiI6MTU1MTIzODEzMywianRpIjoidkRIYTA1MTZDYWxXV3dCdiJ9.rQ7nYj2MsSRA6pfo3u_fw9-ZVig6p7B2N7RXXoIACog"
+
+      // uncomment to work on local and harcode valid token
+      // token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEyNDEsImlzcyI6Imh0dHA6Ly93d3cucHVibGljcGFyY2VsLmNvbS9hcGkvYXV0aGVudGljYXRlIiwiaWF0IjoxNTUxMjM4MTMzLCJleHAiOjE1NTEyNDE3MzMsIm5iZiI6MTU1MTIzODEzMywianRpIjoidkRIYTA1MTZDYWxXV3dCdiJ9.rQ7nYj2MsSRA6pfo3u_fw9-ZVig6p7B2N7RXXoIACog"
       console.log("token ==="+token)
+ 
+      // if token isn't set, get new token
       if (token == undefined) {
         auth(consNo=orderNo)
       } else {
-      var orderNo = location.search.split('orderNo=')[1]
-      getOrders(consNo=orderNo, token=token);
+     
+     getOrders(consNo=orderNo, token=token);
       }
     };
     function auth(consNo){
-      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        // use proxy url to override cors headers error
+        var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
         let username = 'MAB_Kargo';
         let password = 'uykhZOz3';
+
         fetch(proxyUrl+'http://www.publicparcel.com/api/authenticate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json', 'Access-Control-Origin': '*'},
@@ -60,7 +69,6 @@
                   console.log('Request auth succeeded with JSON response', data);
                   Cookies.set('token', data.token);
                   getOrders(consNo=consNo, token=data.token);
-              
                 })
                 .catch((err) => {alert("error"); console.log(err);});
      }
@@ -83,7 +91,7 @@
               result = "No Data"
             } else if (data.status_code == 401 && data.message == "Token has expired"){
               auth();
-              }else{
+            } else {
               result = `<center>Tracking No:</center> <h4 class="text-center">${data.shipment[0].sh_consNo}</h4><br>`;
               result += `<div class="row"><table style="width:100%"><br>`;
               result +=`<tr><th>AWB No</th><th>Pickup Date</th><th>Weight</th><th>Quantity</th><th>Destination</th><th>Proof of Delivery</th></tr>`;

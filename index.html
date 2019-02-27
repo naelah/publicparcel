@@ -18,69 +18,57 @@
 <link href="images/favicon/favicon.png" rel="apple-touch-icon" sizes="114x114">
 
 <!-- Modernizr Scripts -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="javascript/vendor/modernizr-2.7.1.min.js"></script>
+    <script src="javascript/vendor/js.cookie.js"></script>
     <script>
     
-    const authUrl = 'http://www.publicparcel.com/api/authenticate';
-    let username = 'MAB_Kargo';
-    let password = 'uykhZOz3';
-    const body = JSON.stringify({ username, password })
+    
     window.onload = function() {
-      resetCookie();
-      alert("message");
-      alert(authUrl);
-      alert(body);
-      authorize();
-      let token = getCookie('token');
-      alert(token);
+     // resetCookie();
+      //$.cookie.json = true;
+      auth();
+    //  let token = getCookie('token');
 
     };
-    function authorize(){
-      alert("authorize")
-      $.post(authUrl, body, function(data, status){
-        alert(data);
-        alert(status);
-        alert("authorize!");
-      });
-    }
-     function resetCookie(){
-      var mydate = new Date();
-      mydate.setTime(mydate.getTime() - 1);
-      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //  function resetCookie(){
+    //   var mydate = new Date();
+    //   mydate.setTime(mydate.getTime() - 1);
+    //   document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       
-     }
-     function getCookie(cname) {
-      var name = cname + "=";
-      var ca = document.cookie.split(';');
-      for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-          }
-      }
-      return "";
-    }
+    //  }
+    //  function getCookie(cname) {
+    //   var name = cname + "=";
+    //   var ca = document.cookie.split(';');
+    //   for(var i = 0; i < ca.length; i++) {
+    //     var c = ca[i];
+    //     while (c.charAt(0) == ' ') {
+    //       c = c.substring(1);
+    //     }
+    //     if (c.indexOf(name) == 0) {
+    //       return c.substring(name.length, c.length);
+    //       }
+    //   }
+    //   return "";
+    // }
      function auth(){
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
       
       //document.cookie='token=fewbfewdjndwqhidqwhufbejqihduwqibfuwqibfu32hr247y578r431748jxd9my893nfewfew2xe832mdejwqnxfeuyofewfew;';
         let username = 'MAB_Kargo';
         let password = 'uykhZOz3';
-        alert('postAuth');
-        fetch('http://www.publicparcel.com/api/authenticate', {
+        fetch(proxyUrl+'http://www.publicparcel.com/api/authenticate', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {'Content-Type': 'application/json', 'Access-Control-Origin': '*'},
                 body: JSON.stringify({ username, password })
             }).then((res) => { return res.json(); })
-                .then((data) => {
-                  alert(data)
-                  alert("${bearer}");
-                  alert("authenticated");
-                  document.cookie='token=${bearer};'
-              })
+                .then((data) => { 
+                  alert(data.token);
+                  console.log('Request succeeded with JSON response', data);
+                  Cookies.set('token', 'fefefe');
+                  alert('token ==== ' + data.token);
+                  console.log("Document cookie", Cookies.get('token'));
+              
+                })
                 .catch((err) => {alert("error"); console.log(err);});
      }
     </script>
@@ -404,33 +392,6 @@
         </div> <!-- /.row -->
       </div> <!-- /.container -->
     </footer> <!-- /.footer-section -->
-  
-<script>
-        document.getElementById('getData').addEventListener('click', getData);
-        document.getElementById('getAPI').addEventListener('click', getAPI);
-
-        function getAPI()
-        {
-                fetch('https://jsonplaceholder.typicode.com/users')
-                .then((res) => { return res.json() })
-                .then((data) => {
-                    let result = `<h2 class="w3-center w3-allerta w3-xxlarge"> Random User Info From Jsonplaceholder API</h2>`;
-                    data.forEach((user) => {
-                        const {id, name, email, address:{city,street}} = user
-                        result +=
-                            `<div class="w3-panel w3-leftbar w3-border w3-round-small w3-border-blue w3-margin">
-                                <h5> User ID: ${id} </h5>
-                                <ul class="w3-ul">
-                                    <li> User Full Name : ${name}</li>
-                                    <li> User Email : ${email} </li>
-                                    <li> User Address : ${city}, ${street} </li>
-                                </ul>
-                             </div>`;
-                        document.getElementById('result').innerHTML = result;
-                    });
-                })
-        }
-</script> 
 
     <!-- Placed at the end of the document so the pages load faster -->
 <script src="javascript/vendor/jquery-2.1.0.min.js"></script>

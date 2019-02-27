@@ -39,7 +39,8 @@
       token = document.cookie;
       var orderNo = location.search.split('orderNo=')[1]
       alert(orderNo);
-      getOrders();
+      alert(document.cookie);
+      getOrders(orderNo=orderNo);
     };
 
     // function postAuth(){
@@ -109,7 +110,7 @@
               document.getElementById('result').innerHTML = result;
       }
 
-      function getOrders(){
+      function getOrders(orderNo, token){
 
         /*********************************************
          *          Using public parcel API         *

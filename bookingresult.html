@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7 ]> <html class="ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+
+  <!-- Meta -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="author" content="">
+  <meta name="googlebot" content="index,follow">
+
+  <!-- Title -->
+  <title>MASkargo SEND</title>
+
+  <!-- Templates core CSS -->
+  <link href="stylesheets/application.css" rel="stylesheet">
+
+  <!-- Favicons -->
+  <link href="images/favicon/favicon.png" rel="shortcut icon">
+  <link href="images/favicon/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon">
+  <link href="images/favicon/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon" sizes="72x72">
+  <link href="images/favicon/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon" sizes="114x114">
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+  <!-- Modernizr Scripts -->
+  <script src="javascript/vendor/modernizr-2.7.1.min.js"></script>
+  <script src="javascript/vendor/js.cookie.js"></script>
+  <script>
+    window.onload = function () {
+
+      // taking token from cookie
+      token = Cookies.get('token')
+
+      // uncomment to work on local and harcode valid token
+      // token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEyNDEsImlzcyI6Imh0dHA6Ly93d3cucHVibGljcGFyY2VsLmNvbS9hcGkvYXV0aGVudGljYXRlIiwiaWF0IjoxNTUxMjM4MTMzLCJleHAiOjE1NTEyNDE3MzMsIm5iZiI6MTU1MTIzODEzMywianRpIjoidkRIYTA1MTZDYWxXV3dCdiJ9.rQ7nYj2MsSRA6pfo3u_fw9-ZVig6p7B2N7RXXoIACog"
+      console.log("token ===" + token)
+
+      // if token isn't set, get new token
+      if (token == undefined) {
+        auth();
+      } else {
+
+        dropOrder(token = token);
+      }
+    };
+
+    // Read a page's GET URL variables and return them as an associative array.
+    function getUrlVars() {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+      for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+    }
+
+
+    function auth(consNo) {
+
+      /**********************************************
+       *   Using public parcel authorization API  *
+       * ********************************************/
+
+
+      // use proxy url to override cors headers error
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      let username = 'MAB_Kargo';
+      let password = 'uykhZOz3';
+
+      fetch(proxyUrl + 'http://www.publicparcel.com/api/authenticate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Origin': '*' },
+        body: JSON.stringify({ username, password })
+      }).then((res) => { return res.json(); })
+        .then((data) => {
+          console.log('Request auth succeeded with JSON response', data);
+          Cookies.set('token', data.token);
+          dropOrder(token = data.token);
+        })
+        .catch((err) => { alert("error"); console.log(err); });
+    }
+
+
+    function dropOrder(token) {
+
+      var result = "";
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
+      // get all the parameters keyed in by user
+      var params = getUrlVars();
+
+      // Shipper info
+      let receiver_name = params["receiver_name"];
+      let receiver_phone = params["receiver_phone"];
+      let address1 = params["address1"];
+      let address2 = params["address2"];
+      let address3 = params["address3"];
+      let postcode = params["postcode"];
+      let city = params["city"];
+      let states = params["states"];
+      let country1 = params["country1"];
+      let shipper_ref = params["shipper_ref"];
+
+      // Shipment Info
+      let type = params["type"];
+      let qty = params["qty"];
+      let weight = params["weight"];
+      let shipment_value = params["shipment_value"];
+      let shipment_description = params["shipment_description"];
+      let order_date = params["order_date"];
+      let insurance = params["insurance"];
+      let remarks = params["remarks"];
+      let cod_value = params["cod_value"];
+
+
+      let user_api_id = 'xpAlC0rA';
+
+      fetch(proxyUrl + 'http://www.publicparcel.com/api/AutoGenerateConsNo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          receiver_name,
+          receiver_phone,
+          address1,
+          address2,
+          address3,
+          postcode,
+          city,
+          states,
+          country1,
+          shipper_ref,
+
+          type,
+          qty,
+          weight,
+          shipment_value,
+          shipment_description,
+          order_date,
+          insurance,
+          remarks,
+          cod_value,
+          user_api_id
+        }
+        )
+      }).then((res) => { return res.json(); })
+        .then((data) => {
+          console.log('Request order-drop succeeded with JSON response', data);
+
+          if (data[0] == 'No Result') {
+            result = "No Data";
+          } else if (data.status_code == 401 && data.message == "Token has expired") {
+            auth();
+          } else if (data.status_code >= 500) {
+            result = "Error code : " + data.status_code + " Message : " + data.message;
+          }
+
+          else {
+
+            // Process Data here.
+
+            result = "<h4><center>Order Drop successful.</center></h4><br />";
+            result += `<center>This is your </center> <h4 class="text-center">${data[1]}</h4><br />`;
+
+          }
+
+          document.getElementById('result').innerHTML = result;
+        }).catch((err) => {
+          result = "No data";
+          document.getElementById('result').innerHTML = result;
+          console.log(err)
+        });
+    }
+
+  </script>
+</head>
+
+<body class="booklist" id="to-top">
+
+  <section class="booklist-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Logo -->
+          <figure class="text-center">
+            <a href="./index.html">
+              <img class="img-logo" src="images/logo.png" alt="">
+            </a>
+          </figure> <!-- /.text-center -->
+        </div> <!-- /.col-md-12 -->
+      </div> <!-- /.row -->
+      <section class="booklist-content">
+        <div id="result" class="w3-container"></div>
+        <br>
+    </div> <!-- /.row -->
+  </section> <!-- /.sign-in-up-content -->
+  <div class="row">
+    <div class="col-md-12">
+      <section class="footer-copyright text-center">
+        <p>SEND to your doorstep with <i class="fa fa-heart"></i></p>
+      </section> <!-- /.footer-section -->
+    </div> <!-- /.col-md-12 -->
+  </div> <!-- /.row -->
+  </div> <!-- /.container -->
+  </section> <!-- /.sign-in-up-section -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="javascript/vendor/jquery-2.1.0.min.js"></script>
+  <script src="javascript/bootstrap.min.js"></script>
+  <script src="javascript/assets/application.js"></script>
+
+</body>
+
+</html>
